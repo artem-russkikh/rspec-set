@@ -23,16 +23,12 @@ module RSpec
 
           before(:each) do
             model = send(variable_name)
-
-            if model.is_a?(ActiveRecord::Base)
-              model.class.find(i.id)
-            else
-              warn "#{variable_name} is a #{model.class} - rspec-set works with ActiveRecord models only"
-            end
+            model.class.find(model.id)
           end
 
           define_method(variable_name) do
-            self.class.send(:class_variable_get, "@@__rspec_set_#{variable_name}".to_sym)
+            model = self.class.send(:class_variable_get, "@@__rspec_set_#{variable_name}".to_sym)
+            model.class.find(model.id)
           end
         end # set()
 
