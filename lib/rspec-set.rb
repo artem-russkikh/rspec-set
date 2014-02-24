@@ -23,12 +23,15 @@ module RSpec
 
           before(:each) do
             model = send(variable_name)
-            model.class.find(model.id)
           end
 
           define_method(variable_name) do
             model = self.class.send(:class_variable_get, "@@__rspec_set_#{variable_name}".to_sym)
-            model.class.find(model.id)
+            if model.is_a?(ActiveRecord::Base)
+              model.class.find(model.id)
+            else
+              model
+            end
           end
         end # set()
 
